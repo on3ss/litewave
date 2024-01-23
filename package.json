@@ -1,16 +1,16 @@
 {
-  "name": "vite-vanilla-ts-lib-starter",
+  "name": "lite-wave",
   "private": true,
   "version": "0.0.2",
-  "main": "./dist/vite-vanilla-ts-lib-starter.cjs",
-  "module": "./dist/vite-vanilla-ts-lib-starter.mjs",
+  "main": "./dist/litewave.cjs",
+  "module": "./dist/litewave.mjs",
   "exports": {
     ".": {
-      "require": "./dist/vite-vanilla-ts-lib-starter.cjs",
-      "import": "./dist/vite-vanilla-ts-lib-starter.mjs"
+      "require": "./dist/litewave.cjs",
+      "import": "./dist/litewave.mjs"
     }
   },
-  "types": "./dist/vite-vanilla-ts-lib-starter.d.ts",
+  "types": "./dist/litewave.d.ts",
   "scripts": {
     "dev": "vite --host",
     "build": "rimraf dist && tsc && vite build && dts-bundle-generator --config ./dts-bundle-generator.config.ts",

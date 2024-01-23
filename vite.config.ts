@@ -7,9 +7,9 @@ const getPackageName = () => {
   return packageJson.name;
 };
 
-const getPackageNameCamelCase = () => {
+const getPackageNamePascalCase = () => {
   try {
-    return getPackageName().replace(/-./g, (char) => char[1].toUpperCase());
+    return getPackageName().split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
   } catch (err) {
     throw new Error("Name property in package.json is missing.");
   }
@@ -27,8 +27,8 @@ module.exports = defineConfig({
   base: "./",
   build: {
     lib: {
-      entry: path.resolve(__dirname, "src/index.ts"),
-      name: getPackageNameCamelCase(),
+      entry: path.resolve(__dirname, "src/litewave.ts"),
+      name: getPackageNamePascalCase(),
       formats,
       fileName: (format) => fileName[format],
     },

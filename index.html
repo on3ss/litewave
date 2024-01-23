@@ -1,13 +1,111 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self' 'unsafe-inline';connect-src 'self' ws://127.0.0.1:5500;"
+    />
+    <title>Document</title>
   </head>
+
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/index.ts"></script>
+    <div data-domain="todos">
+      <h5>Todos:</h5>
+      <template data-foreach="todos">
+        <div>
+          <h5 data-text="title"></h5>
+          <span data-text-calc="statusText(isDone)"></span>
+          <button type="checkbox" data-event="click:toggle(id),blur:onBlur()">
+            Toggle
+          </button>
+        </div>
+      </template>
+      <p>
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quo eum sed
+        nostrum iure placeat ab odit inventore consequatur hic! Minima illo
+        maiores odit saepe excepturi esse fuga ipsa nihil provident?
+      </p>
+    </div>
+
+    <div data-domain="test">
+      <span data-text="message"></span>
+    </div>
+
+    <div data-domain="users">
+      <h5>Users:</h5>
+      <p data-text="message"></p>
+      <form data-event="submit:add()">
+        <input type="text" data-model="form.name" required />
+        <input type="email" data-model="form.email" required />
+        <button type="submit">Add</button>
+      </form>
+      <ul>
+        <template data-foreach="users">
+          <li>
+            <h6 data-text="name"></h6>
+            <p data-text="email"></p>
+            <a data-href="/users/{id}"></a>
+          </li>
+        </template>
+      </ul>
+    </div>
   </body>
+
+  <script type="module" defer>
+    import { LiteWave } from "./src/litewave.ts";
+
+    LiteWave("todos", {
+      todos: [
+        { id: 1, title: "Buy Groceries", isDone: false },
+        { id: 2, title: "Buy Books", isDone: true },
+        { id: 3, title: "Swimming practice", isDone: true },
+      ],
+      toggle(todoId) {
+        const todoIndex = this.todos.findIndex(todo => todo.id === todoId);
+        if (todoIndex !== -1) {
+          this.todos[todoIndex].isDone = !this.todos[todoIndex].isDone;
+        }
+      },
+      onBlur() {
+        console.log("blurred");
+      },
+      statusText(isDone) {
+        return isDone ? "Done" : "Pending";
+      },
+    });
+
+    LiteWave("users", {
+      form: {
+        name: "Test",
+        email: "test@test.com",
+      },
+      users: [],
+      message: "Test Message",
+      onMount: async function () {
+        try {
+          this.users = [
+            { id: 1, name: "James Madden", email: "james@madden.com" },
+            { id: 2, name: "John Doe", email: "john@doe.com" },
+            { id: 3, name: "Jane Doe", email: "jane@doe.com" },
+          ];
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        }
+      },
+      add() {
+        const maxId = Math.max(...this.users.map(user => user.id));
+        this.users.push({
+          id: maxId + 1,
+          name: this.form.name,
+          email: this.form.email,
+        });
+      },
+    });
+
+    LiteWave("test", {
+      message: "This is the test message",
+    });
+  </script>
 </html>
